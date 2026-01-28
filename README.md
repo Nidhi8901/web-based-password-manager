@@ -141,9 +141,3 @@ This project fully satisfies the assignment requirements:
 ✔ Auto-generation of passwords
 
 ---
-
-Let me know if you want:
-
-* Resume bullet points
-* Interview Q&A
-* Demo script
