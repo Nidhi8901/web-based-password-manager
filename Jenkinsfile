@@ -26,6 +26,9 @@ pipeline {
 
         stage('Test') {
             steps {
+                echo 'Installing Python dependencies...'
+                sh 'python3 -m pip install --no-cache-dir -r requirements.txt'
+
                 echo 'Running automated tests...'
                 sh 'chmod +x test.sh'
                 sh './test.sh'
@@ -46,7 +49,7 @@ pipeline {
 
                 withCredentials([
                     usernamePassword(
-                        credentialsId: 'dockerhub-creds',
+                        credentialsId: 'dockerhub_cred',
                         usernameVariable: 'DOCKER_USERNAME',
                         passwordVariable: 'DOCKER_PASSWORD'
                     )
