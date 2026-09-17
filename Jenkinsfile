@@ -17,41 +17,43 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo '=== BUILD APPLICATION ==='
+                echo '=== BUILD ==='
 
                 sh '''
-                    echo "Python syntax check..."
-                    docker run --rm \
-                        -v "$(pwd)":/app \
-                        -w /app \
-                        python:3.10-slim \
-                        python -m py_compile app.py web_app.py
+                    echo "Checking project files..."
+                    test -f app.py
+                    test -f web_app.py
+                    test -f requirements.txt
+                    test -f Dockerfile
 
-                    echo "Build preparation completed."
+                    echo "Building Docker image..."
+                    docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} .
                 '''
             }
         }
 
         stage('Test') {
             steps {
-                echo '=== TEST APPLICATION ==='
+                echo '=== TEST ==='
 
                 sh '''
-                    docker build \
-                        -t ${DOCKER_IMAGE}:${IMAGE_TAG} \
-                        .
-
-                    echo "Testing installed Python packages..."
+                    echo "Testing Python packages inside application image..."
 
                     docker run --rm \
                         ${DOCKER_IMAGE}:${IMAGE_TAG} \
-                        python -c "import flask, passlib, cryptography, bcrypt; print('All required Python packages are installed')"
+                        python -c "import flask, passlib, cryptography, bcrypt; print('Required packages: PASS')"
 
                     echo "Testing Python syntax..."
 
                     docker run --rm \
                         ${DOCKER_IMAGE}:${IMAGE_TAG} \
                         python -m py_compile app.py web_app.py
+
+                    echo "Testing application files..."
+
+                    docker run --rm \
+                        ${DOCKER_IMAGE}:${IMAGE_TAG} \
+                        sh -c "test -f /app/app.py && test -f /app/web_app.py && test -f /app/requirements.txt"
 
                     echo "======================================"
                     echo "ALL TESTS PASSED"
@@ -62,14 +64,12 @@ pipeline {
 
         stage('Package') {
             steps {
-                echo '=== PACKAGE DOCKER IMAGE ==='
+                echo '=== PACKAGE ==='
 
                 sh '''
-                    docker tag \
-                        ${DOCKER_IMAGE}:${IMAGE_TAG} \
-                        ${DOCKER_IMAGE}:latest
+                    docker tag ${DOCKER_IMAGE}:${IMAGE_TAG} ${DOCKER_IMAGE}:latest
 
-                    echo "Docker images created:"
+                    echo "Created images:"
                     docker images | grep web-based-password-manager
                 '''
             }
@@ -77,7 +77,7 @@ pipeline {
 
         stage('Docker Push') {
             steps {
-                echo '=== PUSH TO DOCKER HUB ==='
+                echo '=== DOCKER HUB PUSH ==='
 
                 withCredentials([
                     usernamePassword(
@@ -88,7 +88,7 @@ pipeline {
                 ]) {
                     sh '''
                         echo "$DOCKER_PASSWORD" | docker login \
-                            -u "$DOCKER_USERNAME" \
+                            --username "$DOCKER_USERNAME" \
                             --password-stdin
 
                         docker push ${DOCKER_IMAGE}:${IMAGE_TAG}
@@ -103,21 +103,15 @@ pipeline {
 
     post {
         success {
-            echo '''
-========================================
-CI/CD PIPELINE SUCCESSFUL
-========================================
-Checkout      : PASSED
-Build         : PASSED
-Test          : PASSED
-Package       : PASSED
-Docker Push   : PASSED
-========================================
-'''
+            echo '======================================'
+            echo 'WEEK 9 CI/CD PIPELINE SUCCESSFUL'
+            echo '======================================'
         }
 
         failure {
-            echo 'CI/CD PIPELINE FAILED'
+            echo '======================================'
+            echo 'PIPELINE FAILED'
+            echo '======================================'
         }
     }
 }
