@@ -17,61 +17,67 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo '=== BUILD ==='
+                echo '=== BUILD APPLICATION ==='
 
                 sh '''
+                    echo "Python syntax check..."
                     docker run --rm \
-                      -v "$PWD":/app \
-                      -w /app \
-                      python:3.10-slim \
-                      python -m py_compile app.py web_app.py
+                        -v "$(pwd)":/app \
+                        -w /app \
+                        python:3.10-slim \
+                        python -m py_compile app.py web_app.py
+
+                    echo "Build preparation completed."
                 '''
             }
         }
 
         stage('Test') {
             steps {
-                echo '=== TEST ==='
+                echo '=== TEST APPLICATION ==='
 
                 sh '''
+                    docker build \
+                        -t ${DOCKER_IMAGE}:${IMAGE_TAG} \
+                        .
+
+                    echo "Testing installed Python packages..."
+
                     docker run --rm \
-                      -v "$PWD":/app \
-                      -w /app \
-                      python:3.10-slim \
-                      sh -c "
-                        pip install --no-cache-dir -r requirements.txt &&
-                        python -c 'import flask, passlib, cryptography, bcrypt' &&
-                        python -m py_compile app.py web_app.py &&
-                        test -f app.py &&
-                        test -f web_app.py &&
-                        test -f requirements.txt &&
-                        test -f Dockerfile &&
-                        echo '======================================' &&
-                        echo 'ALL TESTS PASSED' &&
-                        echo '======================================'
-                      "
+                        ${DOCKER_IMAGE}:${IMAGE_TAG} \
+                        python -c "import flask, passlib, cryptography, bcrypt; print('All required Python packages are installed')"
+
+                    echo "Testing Python syntax..."
+
+                    docker run --rm \
+                        ${DOCKER_IMAGE}:${IMAGE_TAG} \
+                        python -m py_compile app.py web_app.py
+
+                    echo "======================================"
+                    echo "ALL TESTS PASSED"
+                    echo "======================================"
                 '''
             }
         }
 
         stage('Package') {
             steps {
-                echo '=== DOCKER BUILD ==='
+                echo '=== PACKAGE DOCKER IMAGE ==='
 
                 sh '''
-                    docker build \
-                      -t ${DOCKER_IMAGE}:${IMAGE_TAG} \
-                      -t ${DOCKER_IMAGE}:latest \
-                      .
-                '''
+                    docker tag \
+                        ${DOCKER_IMAGE}:${IMAGE_TAG} \
+                        ${DOCKER_IMAGE}:latest
 
-                sh 'docker images | grep web-based-password-manager'
+                    echo "Docker images created:"
+                    docker images | grep web-based-password-manager
+                '''
             }
         }
 
         stage('Docker Push') {
             steps {
-                echo '=== DOCKER PUSH ==='
+                echo '=== PUSH TO DOCKER HUB ==='
 
                 withCredentials([
                     usernamePassword(
@@ -82,8 +88,8 @@ pipeline {
                 ]) {
                     sh '''
                         echo "$DOCKER_PASSWORD" | docker login \
-                          -u "$DOCKER_USERNAME" \
-                          --password-stdin
+                            -u "$DOCKER_USERNAME" \
+                            --password-stdin
 
                         docker push ${DOCKER_IMAGE}:${IMAGE_TAG}
                         docker push ${DOCKER_IMAGE}:latest
@@ -104,14 +110,14 @@ CI/CD PIPELINE SUCCESSFUL
 Checkout      : PASSED
 Build         : PASSED
 Test          : PASSED
-Docker Build  : PASSED
+Package       : PASSED
 Docker Push   : PASSED
 ========================================
 '''
         }
 
         failure {
-            echo 'CI/CD PIPELINE FAILED - CHECK THE FAILED STAGE'
+            echo 'CI/CD PIPELINE FAILED'
         }
     }
 }
