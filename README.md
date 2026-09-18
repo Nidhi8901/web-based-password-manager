@@ -1166,7 +1166,5 @@ Ansible
 Python
 
 
-#AUTHOR
-NIDHI KUMARI
 CI/CD
 ```
