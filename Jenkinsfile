@@ -1,3 +1,4 @@
+```groovy
 pipeline {
     agent any
 
@@ -49,8 +50,51 @@ pipeline {
                         ${DOCKER_IMAGE}:${IMAGE_TAG} \
                         sh -c "test -f /app/app.py && test -f /app/web_app.py && test -f /app/requirements.txt"
 
+                    echo "Checking container user..."
+                    USER_ID=$(docker run --rm ${DOCKER_IMAGE}:${IMAGE_TAG} id -u)
+                    echo "Container user ID: ${USER_ID}"
+
+                    test "${USER_ID}" != "0"
+
+                    echo "Non-root container check: PASS"
+
                     echo "======================================"
                     echo "ALL TESTS PASSED"
+                    echo "======================================"
+                '''
+            }
+        }
+
+        stage('Security Scan') {
+            steps {
+                echo '=== SECURITY SCAN ==='
+
+                sh '''
+                    echo "Scanning Docker image for HIGH and CRITICAL vulnerabilities..."
+
+                    docker run --rm \
+                        -v /var/run/docker.sock:/var/run/docker.sock \
+                        aquasec/trivy:0.74.0 \
+                        image \
+                        --severity HIGH,CRITICAL \
+                        --exit-code 0 \
+                        ${DOCKER_IMAGE}:${IMAGE_TAG}
+
+                    echo
+                    echo "Checking for CRITICAL vulnerabilities..."
+
+                    docker run --rm \
+                        -v /var/run/docker.sock:/var/run/docker.sock \
+                        aquasec/trivy:0.74.0 \
+                        image \
+                        --severity CRITICAL \
+                        --exit-code 1 \
+                        ${DOCKER_IMAGE}:${IMAGE_TAG}
+
+                    echo
+                    echo "======================================"
+                    echo "SECURITY SCAN PASSED"
+                    echo "No CRITICAL vulnerabilities detected."
                     echo "======================================"
                 '''
             }
@@ -191,3 +235,4 @@ pipeline {
         }
     }
 }
+```
