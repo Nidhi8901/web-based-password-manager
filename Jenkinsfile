@@ -1,4 +1,3 @@
-```groovy
 pipeline {
     agent any
 
@@ -38,20 +37,28 @@ pipeline {
                 echo '=== TEST ==='
 
                 sh '''
+                    echo "Testing required Python packages..."
+
                     docker run --rm \
                         ${DOCKER_IMAGE}:${IMAGE_TAG} \
                         python -c "import flask, passlib, cryptography, bcrypt; print('Required packages: PASS')"
 
+                    echo "Testing Python syntax..."
+
                     docker run --rm \
                         ${DOCKER_IMAGE}:${IMAGE_TAG} \
                         python -m py_compile app.py web_app.py
+
+                    echo "Testing required application files..."
 
                     docker run --rm \
                         ${DOCKER_IMAGE}:${IMAGE_TAG} \
                         sh -c "test -f /app/app.py && test -f /app/web_app.py && test -f /app/requirements.txt"
 
                     echo "Checking container user..."
+
                     USER_ID=$(docker run --rm ${DOCKER_IMAGE}:${IMAGE_TAG} id -u)
+
                     echo "Container user ID: ${USER_ID}"
 
                     test "${USER_ID}" != "0"
@@ -146,6 +153,7 @@ pipeline {
                     kubectl config current-context
 
                     echo "Deploying application..."
+
                     kubectl apply -f k8s/deployment.yaml
                     kubectl apply -f k8s/service.yaml
 
@@ -215,6 +223,7 @@ pipeline {
 
                     echo
                     echo "=== Rollout History ==="
+
                     kubectl rollout history deployment/password-manager
                 '''
             }
@@ -235,4 +244,3 @@ pipeline {
         }
     }
 }
-```
