@@ -31,3 +31,11 @@ passwords.json
 
 # Kubernetes secrets
 k8s/secret.yaml
+
+# Trivy local scanner and reports
+trivy.exe
+trivy.zip
+trivy_0.67.2_Windows-64bit.zip
+trivy-before.txt
+trivy-after.txt
+trivy-high-critical.txt
