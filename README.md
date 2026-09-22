@@ -1,8 +1,8 @@
 # 🔐 Web-Based Password Manager
 
-A web-based password manager built with **Python Flask** and extended with a complete **DevOps CI/CD workflow** using GitHub, Jenkins, Docker, Docker Hub, and Kubernetes.
+A web-based password manager built with **Python Flask** and extended with a complete **DevOps CI/CD and DevSecOps workflow** using GitHub, Jenkins, Docker, Docker Hub, Kubernetes, and Trivy.
 
-The project demonstrates an end-to-end workflow from source-code commit to automated testing, container image publishing, Kubernetes deployment, rolling update, verification, and rollback.
+The project demonstrates an end-to-end workflow from source-code changes to automated testing, security scanning, container image publishing, Kubernetes deployment, verification, and rollback testing.
 
 ---
 
@@ -10,41 +10,52 @@ The project demonstrates an end-to-end workflow from source-code commit to autom
 
 The Web-Based Password Manager is a Flask-based application for managing passwords through a web interface.
 
-The project includes both application development and DevOps automation.
-
 ### Application capabilities
 
-* User registration and login
-* Password management
-* Password generation
-* Password strength checking
-* Password updates
-* Password listing
-* Password expiry support
-* Password hashing
-* Password encryption
-* Web-based interface
+- User registration and login
+- Password management
+- Password generation
+- Password strength checking
+- Password updates
+- Password listing
+- Password expiry support
+- Password hashing
+- Password encryption
+- Web-based interface
 
 ### DevOps capabilities
 
-* Git-based source control
-* GitHub integration
-* Jenkins CI/CD
-* GitHub webhook triggering
-* Automated testing
-* Docker containerization
-* Docker Hub image publishing
-* Kubernetes deployment
-* Kubernetes rolling updates
-* Deployment verification
-* Kubernetes rollback
-* Environment-based secret handling
+- Git-based source control
+- GitHub integration
+- GitHub Webhook
+- Jenkins CI/CD
+- Automated testing
+- Docker containerization
+- Docker Hub image publishing
+- Kubernetes deployment
+- Kubernetes rolling updates
+- Deployment verification
+- Kubernetes rollback
+- Environment-based secret handling
+
+### Week 9 DevSecOps improvements
+
+- Docker image hardening
+- Non-root container execution
+- Docker build security improvements
+- `.dockerignore` implementation
+- Secret and generated-file exclusion
+- Trivy vulnerability scanning
+- Critical vulnerability pipeline gate
+- Container user validation
+- Docker health check
+- Dependency/security review
+- Production readiness review
+- Kubernetes deployment verification
 
 ---
 
-# 🚀 DevOps Workflow
-
-The project follows this workflow:
+# 🚀 Complete DevOps / DevSecOps Workflow
 
 ```text
 Developer
@@ -60,6 +71,7 @@ Jenkins
     ├── Checkout
     ├── Build
     ├── Test
+    ├── Security Scan
     ├── Package
     ├── Docker Push
     ├── Deploy
@@ -84,36 +96,22 @@ Password Manager Application
 
 # 🛠️ Technology Stack
 
-| Technology            | Purpose                            |
-| --------------------- | ---------------------------------- |
-| Python                | Application development            |
-| Flask                 | Web application framework          |
-| Passlib               | Password hashing                   |
-| Cryptography / Fernet | Data encryption                    |
-| Git                   | Version control                    |
-| GitHub                | Source code management             |
-| Jenkins               | CI/CD automation                   |
-| Docker                | Containerization                   |
-| Docker Hub            | Container image registry           |
-| Kubernetes            | Container orchestration            |
-| Kind                  | Local Kubernetes cluster           |
-| Bash                  | Automation and testing             |
-| ngrok                 | Local Jenkins webhook connectivity |
-
----
-
-# ✨ Application Features
-
-* User registration and authentication
-* Password storage and management
-* Password generation
-* Password strength checking
-* Password updates
-* Password listing
-* Password expiry handling
-* Password hashing
-* Password encryption
-* Web-based password management interface
+| Technology | Purpose |
+|---|---|
+| Python | Application development |
+| Flask | Web application framework |
+| Passlib | Password hashing |
+| Cryptography / Fernet | Data encryption |
+| Git | Version control |
+| GitHub | Source code management |
+| Jenkins | CI/CD automation |
+| Docker | Containerization |
+| Docker Hub | Container image registry |
+| Kubernetes | Container orchestration |
+| Kind | Local Kubernetes cluster |
+| Trivy | Container vulnerability scanning |
+| Bash | Automation and testing |
+| ngrok | Local Jenkins webhook connectivity |
 
 ---
 
@@ -127,6 +125,7 @@ web-based-password-manager/
 ├── key.py
 ├── requirements.txt
 ├── Dockerfile
+├── .dockerignore
 ├── Jenkinsfile
 ├── test.sh
 ├── .gitignore
@@ -142,20 +141,20 @@ web-based-password-manager/
 
 ### Important files
 
-| File                      | Purpose                                                         |
-| ------------------------- | --------------------------------------------------------------- |
-| `app.py`                  | Core password-manager functionality                             |
-| `web_app.py`              | Flask web application                                           |
-| `key.py`                  | Key-related application utility                                 |
-| `requirements.txt`        | Python dependencies                                             |
-| `Dockerfile`              | Docker image configuration                                      |
-| `Jenkinsfile`             | Jenkins CI/CD pipeline                                          |
-| `test.sh`                 | Automated project validation                                    |
-| `.env.example`            | Example environment configuration                               |
-| `.gitignore`              | Prevents local secrets and generated files from being committed |
-| `k8s/deployment.yaml`     | Kubernetes Deployment configuration                             |
-| `k8s/service.yaml`        | Kubernetes Service configuration                                |
-| `project screenshots.pdf` | Project and DevOps execution evidence                           |
+| File | Purpose |
+|---|---|
+| `app.py` | Core password-manager functionality |
+| `web_app.py` | Flask web application |
+| `key.py` | Key-related application utility |
+| `requirements.txt` | Python dependencies |
+| `Dockerfile` | Secure Docker image configuration |
+| `.dockerignore` | Prevents unnecessary and sensitive files from entering the image |
+| `Jenkinsfile` | Jenkins CI/CD and security pipeline |
+| `test.sh` | Automated project validation |
+| `.env.example` | Example environment configuration |
+| `.gitignore` | Prevents secrets and generated files from being committed |
+| `k8s/deployment.yaml` | Kubernetes Deployment configuration |
+| `k8s/service.yaml` | Kubernetes Service configuration |
 
 ---
 
@@ -163,21 +162,21 @@ web-based-password-manager/
 
 The application uses an environment variable for the encryption key.
 
-The actual encryption key should not be stored in source code or committed to GitHub.
+The actual encryption key is not stored in source code.
 
-The repository provides an example configuration:
+Example configuration:
 
 ```text
 ENCRYPTION_KEY=your-fernet-encryption-key-here
 ```
 
-through:
+The example configuration is provided through:
 
 ```text
 .env.example
 ```
 
-The actual `.env` file is excluded using `.gitignore`.
+The actual `.env` file is excluded from Git.
 
 The repository also excludes local application data and generated files such as:
 
@@ -188,69 +187,16 @@ The repository also excludes local application data and generated files such as:
 *.sqlite3
 passwords.json
 __pycache__/
-k8s/secret.yaml
 ```
 
-For Kubernetes, the encryption key is provided through a Kubernetes Secret and referenced by the Deployment as the `ENCRYPTION_KEY` environment variable.
+Sensitive information such as:
 
-> Never store a real encryption key, password, Docker Hub token, Kubernetes credential, or other secret in this repository.
+- Encryption keys
+- Docker Hub credentials
+- Jenkins credentials
+- Kubernetes credentials
 
----
-
-# 💻 Run the Application Locally
-
-## 1. Clone the repository
-
-```bash
-git clone <repository-url>
-cd web-based-password-manager
-```
-
-## 2. Create a virtual environment
-
-### Linux / WSL / Git Bash
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### Windows
-
-```powershell
-python -m venv venv
-venv\Scripts\activate
-```
-
-## 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-## 4. Configure the encryption key
-
-Create a local `.env` file based on `.env.example` and provide your local encryption key.
-
-Example:
-
-```text
-ENCRYPTION_KEY=your-local-encryption-key
-```
-
-Do not commit the `.env` file.
-
-## 5. Start the application
-
-```bash
-python web_app.py
-```
-
-The application runs on:
-
-```text
-http://localhost:8000
-```
+must not be committed to the repository.
 
 ---
 
@@ -258,75 +204,99 @@ http://localhost:8000
 
 The application is containerized using Docker.
 
-The Docker workflow is:
+## Week 9 Secure Dockerfile
+
+The Docker image was hardened during Week 9.
+
+The security improvements include:
+
+- Updating Debian packages
+- Upgrading pip, setuptools and wheel
+- Installing only required Python dependencies
+- Creating a dedicated non-root `appuser`
+- Running the application as `appuser`
+- Using `COPY --chown`
+- Adding a Docker health check
+- Removing apt package lists after installation
+- Excluding secrets and unnecessary files through `.dockerignore`
+
+The container no longer runs the application as the root user.
+
+---
+
+# 🛡️ Docker Security Improvements
+
+### Non-root user
+
+The image creates:
 
 ```text
-Dockerfile
-    │
-    ▼
-Docker Build
-    │
-    ▼
-Docker Image
-    │
-    ▼
-Docker Container
-    │
-    ▼
-Flask Application
+appuser
 ```
 
-## Build the image
+and the application runs using:
 
-```bash
-docker build -t web-based-password-manager .
+```dockerfile
+USER appuser
 ```
 
-## Run the container
+The Jenkins pipeline also verifies that the resulting container does not run as UID `0`.
 
-The application requires the encryption key as an environment variable.
+### Health check
 
-```bash
-docker run -d \
-  --name password-manager \
-  -p 8000:8000 \
-  -e ENCRYPTION_KEY="your-local-encryption-key" \
-  web-based-password-manager
+The Docker image includes a health check:
+
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/', timeout=3)" || exit 1
 ```
 
-Check the running container:
+### `.dockerignore`
 
-```bash
-docker ps
-```
-
-Open the application:
+The following files are excluded from the Docker build context:
 
 ```text
-http://localhost:8000
+.git
+.gitignore
+.env
+.env.*
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.venv
+venv
+password_manager.db
+*.db
+*.json
+trivy-before.txt
+trivy-high-critical.txt
+trivy.exe
+trivy.zip
+trivy-after.txt
 ```
+
+This prevents local secrets, databases, scanner files and generated files from unnecessarily entering the Docker image.
 
 ---
 
 # 🧪 Automated Testing
 
-The project contains an automated testing script:
+The project contains:
 
 ```text
 test.sh
 ```
 
-The script validates three areas.
+The test script validates:
 
-### 1. Python syntax
+### Python syntax
 
 ```bash
 python3 -m py_compile app.py web_app.py
 ```
 
-### 2. Required Python packages
-
-The project checks the required packages:
+### Required Python packages
 
 ```text
 flask
@@ -335,9 +305,7 @@ cryptography
 bcrypt
 ```
 
-### 3. Required project files
-
-The test verifies the existence of:
+### Required project files
 
 ```text
 app.py
@@ -346,7 +314,7 @@ requirements.txt
 Dockerfile
 ```
 
-Run the tests locally:
+Run locally:
 
 ```bash
 chmod +x test.sh
@@ -359,6 +327,116 @@ Expected result:
 All tests passed successfully!
 ```
 
+The Jenkins pipeline also performs application and container validation.
+
+---
+
+# 🔒 DevSecOps Security Scanning
+
+Week 9 introduced Trivy container vulnerability scanning into the CI/CD pipeline.
+
+The Jenkins pipeline uses:
+
+```text
+aquasec/trivy:0.74.0
+```
+
+The security stage performs:
+
+1. HIGH and CRITICAL vulnerability reporting
+2. CRITICAL vulnerability gating
+
+The pipeline is configured so that HIGH findings are reported without automatically stopping the build, while a CRITICAL vulnerability causes the security gate to fail.
+
+Example:
+
+```bash
+docker run --rm \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    aquasec/trivy:0.74.0 \
+    image \
+    --severity HIGH,CRITICAL \
+    --exit-code 0 \
+    ${DOCKER_IMAGE}:${IMAGE_TAG}
+```
+
+Critical vulnerability gate:
+
+```bash
+docker run --rm \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    aquasec/trivy:0.74.0 \
+    image \
+    --severity CRITICAL \
+    --exit-code 1 \
+    ${DOCKER_IMAGE}:${IMAGE_TAG}
+```
+
+---
+
+# 📊 Week 9 Security Scan Results
+
+## Before Security Improvements
+
+The initial Trivy scan reported:
+
+```text
+Total: 180
+
+UNKNOWN: 2
+LOW: 58
+MEDIUM: 63
+HIGH: 54
+CRITICAL: 3
+```
+
+The initial image therefore contained:
+
+```text
+3 CRITICAL vulnerabilities
+54 HIGH vulnerabilities
+```
+
+---
+
+## After Security Improvements
+
+After Dockerfile hardening, `.dockerignore` improvements and removal of unnecessary scanner files from the image, the final scan reported:
+
+```text
+Total: 152
+
+UNKNOWN: 2
+LOW: 57
+MEDIUM: 49
+HIGH: 44
+CRITICAL: 0
+```
+
+The final scan therefore achieved:
+
+```text
+CRITICAL: 0
+```
+
+The remaining findings were primarily associated with operating-system packages in the Debian base image.
+
+A separate Python dependency scan reported:
+
+```text
+Total: 3
+
+UNKNOWN: 0
+LOW: 0
+MEDIUM: 1
+HIGH: 2
+CRITICAL: 0
+```
+
+The remaining dependency findings should be reviewed and upgraded where compatible fixes are available.
+
+> Security scanning is part of the CI/CD process, but a zero-vulnerability result should not be assumed from this scan. Remaining non-critical findings require continued dependency and base-image maintenance.
+
 ---
 
 # ⚙️ Jenkins CI/CD
@@ -369,7 +447,7 @@ The CI/CD pipeline is defined in:
 Jenkinsfile
 ```
 
-The Jenkins pipeline automates the application lifecycle:
+The final Week 9 pipeline contains:
 
 ```text
 Checkout
@@ -377,6 +455,8 @@ Checkout
 Build
     ↓
 Test
+    ↓
+Security Scan
     ↓
 Package
     ↓
@@ -389,37 +469,25 @@ Verify
 Rollback Test
 ```
 
-The pipeline uses the Docker image:
-
-```text
-nidhi8901/web-based-password-manager
-```
-
-and creates a build-specific image tag using the Jenkins build number.
-
 ---
 
 # 🔄 Jenkins Pipeline Stages
 
 ## 1. Checkout
 
-Jenkins checks out the latest source code from the GitHub repository.
-
-```groovy
-checkout scm
-```
+Jenkins checks out the latest source code from GitHub.
 
 ---
 
 ## 2. Build
 
-The Build stage:
+The pipeline:
 
-* Verifies required project files
-* Builds the Docker image
-* Tags the image using the Jenkins build number
+- Checks required project files
+- Builds the Docker image
+- Creates a build-specific image tag
 
-Example image:
+Example:
 
 ```text
 nidhi8901/web-based-password-manager:<BUILD_NUMBER>
@@ -429,33 +497,46 @@ nidhi8901/web-based-password-manager:<BUILD_NUMBER>
 
 ## 3. Test
 
-Testing is performed using the newly built Docker image.
+The pipeline validates:
 
-The pipeline checks:
+- Python syntax
+- Required packages
+- Required files
+- Container configuration
+- Non-root container execution
 
-* Required Python packages
-* Python syntax
-* Required application files
-
-The pipeline reports:
+The non-root check verifies that the container user ID is not:
 
 ```text
-ALL TESTS PASSED
+0
 ```
-
-when the checks succeed.
 
 ---
 
-## 4. Package
+## 4. Security Scan
 
-The build-specific image is also tagged as:
+Trivy scans the Docker image for:
+
+```text
+HIGH
+CRITICAL
+```
+
+vulnerabilities.
+
+The pipeline reports HIGH and CRITICAL findings and uses a separate CRITICAL-only gate.
+
+---
+
+## 5. Package
+
+The build image is also tagged:
 
 ```text
 latest
 ```
 
-The resulting image tags are:
+Resulting tags:
 
 ```text
 nidhi8901/web-based-password-manager:<BUILD_NUMBER>
@@ -464,24 +545,22 @@ nidhi8901/web-based-password-manager:latest
 
 ---
 
-## 5. Docker Push
+## 6. Docker Push
 
-Jenkins authenticates with Docker Hub using a Jenkins credential.
-
-The credential is referenced by the ID:
+Jenkins authenticates to Docker Hub using the Jenkins credential:
 
 ```text
 dockerhub_cred
 ```
 
-The pipeline pushes both:
+Credentials are not hard-coded in the Jenkinsfile.
+
+The pipeline pushes:
 
 ```text
 <BUILD_NUMBER>
 latest
 ```
-
-Docker authentication details are not hard-coded in the Jenkinsfile.
 
 ---
 
@@ -489,7 +568,7 @@ Docker authentication details are not hard-coded in the Jenkinsfile.
 
 GitHub is integrated with Jenkins using a webhook.
 
-The workflow is:
+Workflow:
 
 ```text
 GitHub Push
@@ -504,7 +583,7 @@ Jenkins
 CI/CD Pipeline
 ```
 
-For the local Jenkins setup, ngrok was used to expose Jenkins for webhook delivery.
+For the local Jenkins environment, ngrok was used to expose Jenkins for webhook delivery.
 
 The Jenkins webhook endpoint is:
 
@@ -512,23 +591,21 @@ The Jenkins webhook endpoint is:
 /github-webhook/
 ```
 
-A successful GitHub push can automatically trigger a Jenkins build.
-
-Example Jenkins trigger:
+A successful trigger appears in Jenkins as:
 
 ```text
 Started by GitHub push by Nidhi8901
 ```
 
-> The ngrok public URL is intentionally not stored in this README because free ngrok sessions can change their public URL.
+The temporary ngrok URL is intentionally not stored in this README because free ngrok URLs can change.
 
 ---
 
 # ☸️ Kubernetes Deployment
 
-The application is deployed to a local Kubernetes cluster using **Kind**.
+The application is deployed to a local Kubernetes cluster using Kind.
 
-Kubernetes configuration is stored in:
+Kubernetes configuration:
 
 ```text
 k8s/
@@ -536,11 +613,30 @@ k8s/
 └── service.yaml
 ```
 
+The Kubernetes environment used for the final Week 9 pipeline was:
+
+```text
+Kind
+Kubernetes v1.30.0
+```
+
+The final cluster contained:
+
+```text
+kind-control-plane
+```
+
+with status:
+
+```text
+Ready
+```
+
 ---
 
-# 📦 Kubernetes Deployment Configuration
+# 📦 Kubernetes Deployment
 
-The Kubernetes Deployment runs:
+The application deployment uses:
 
 ```text
 3 replicas
@@ -552,7 +648,7 @@ The application container exposes:
 8000
 ```
 
-The Deployment uses the Kubernetes:
+The deployment uses:
 
 ```text
 RollingUpdate
@@ -560,7 +656,7 @@ RollingUpdate
 
 strategy.
 
-Configuration:
+Example:
 
 ```yaml
 strategy:
@@ -570,15 +666,13 @@ strategy:
     maxSurge: 1
 ```
 
-This allows Kubernetes to replace application pods gradually instead of replacing all replicas at once.
-
 ---
 
-# 🔑 Kubernetes Secret
+# 🔑 Kubernetes Secrets
 
-The Deployment obtains the application encryption key from a Kubernetes Secret.
+The application encryption key is supplied through a Kubernetes Secret.
 
-Secret name:
+Secret:
 
 ```text
 password-manager-secret
@@ -590,423 +684,79 @@ Environment variable:
 ENCRYPTION_KEY
 ```
 
-The secret is referenced using:
-
-```yaml
-env:
-  - name: ENCRYPTION_KEY
-    valueFrom:
-      secretKeyRef:
-        name: password-manager-secret
-        key: ENCRYPTION_KEY
-```
-
-The Kubernetes secret configuration is not committed to the repository.
-
-A local secret can be created using:
-
-```bash
-kubectl create secret generic password-manager-secret \
-  --from-literal=ENCRYPTION_KEY="your-local-encryption-key"
-```
+The application secret is not stored as plaintext in the Git repository.
 
 ---
 
 # 🌍 Kubernetes Service
 
-The application is exposed using a Kubernetes NodePort Service.
+The application is exposed through a Kubernetes Service.
+
+The service configuration is stored in:
 
 ```text
-Service:
-password-manager-service
-
-Type:
-NodePort
-
-Port:
-8000
-
-Target Port:
-8000
-
-Node Port:
-30080
+k8s/service.yaml
 ```
 
-Check the Service:
+The service provides access to the application running on port:
 
-```bash
-kubectl get service password-manager-service
+```text
+8000
 ```
 
 ---
 
-# 🚀 Deploy to Kubernetes
+# 🔎 Deployment Verification
 
-Select the Kind Kubernetes context:
-
-```bash
-kubectl config use-context kind-kind
-```
-
-Create the application secret if it does not already exist:
-
-```bash
-kubectl create secret generic password-manager-secret \
-  --from-literal=ENCRYPTION_KEY="your-local-encryption-key" \
-  --dry-run=client -o yaml | kubectl apply -f -
-```
-
-Apply the Deployment:
-
-```bash
-kubectl apply -f k8s/deployment.yaml
-```
-
-Apply the Service:
-
-```bash
-kubectl apply -f k8s/service.yaml
-```
-
-Check the Deployment:
+The Jenkins Verify stage checks the Kubernetes deployment using commands such as:
 
 ```bash
 kubectl get deployment password-manager
 ```
 
-Check the Pods:
-
-```bash
-kubectl get pods -l app=password-manager
-```
-
-Check the Service:
-
-```bash
-kubectl get svc password-manager-service
-```
-
-Wait for the rollout:
-
-```bash
-kubectl rollout status deployment/password-manager
-```
-
----
-
-# 🔄 Rolling Deployment
-
-The Kubernetes Deployment uses the `RollingUpdate` strategy.
-
-A specific image version can be deployed using:
-
-```bash
-kubectl set image deployment/password-manager \
-  password-manager=nidhi8901/web-based-password-manager:9
-```
-
-Then check the rollout:
-
-```bash
-kubectl rollout status deployment/password-manager
-```
-
-Check the application pods:
-
 ```bash
 kubectl get pods -l app=password-manager -o wide
 ```
 
-Kubernetes gradually replaces old pods with new pods according to the configured rolling-update strategy.
+```bash
+kubectl get service password-manager-service
+```
+
+```bash
+kubectl rollout status deployment/password-manager
+```
+
+The purpose of the verification stage is to confirm that the application has successfully reached the expected Kubernetes deployment state.
 
 ---
 
-# ↩️ Rollback
+# ↩️ Kubernetes Rollback
 
-Deployment history can be viewed with:
+Deployment history can be checked using:
 
 ```bash
 kubectl rollout history deployment/password-manager
 ```
 
-If a previous version needs to be restored:
+A previous version can be restored with:
 
 ```bash
 kubectl rollout undo deployment/password-manager
 ```
 
-Verify the rollback:
+Then verify:
 
 ```bash
 kubectl rollout status deployment/password-manager
 ```
 
-Then check the Pods:
-
-```bash
-kubectl get pods -l app=password-manager
-```
-
-The Jenkins pipeline also includes a dedicated:
+The Jenkins pipeline also contains a dedicated:
 
 ```text
 Rollback Test
 ```
 
 stage.
-
----
-
-# 🔎 Deployment Verification
-
-The Jenkins `Verify` stage checks the Kubernetes deployment using:
-
-```bash
-kubectl get deployment password-manager
-```
-
-Pods:
-
-```bash
-kubectl get pods -l app=password-manager -o wide
-```
-
-Service:
-
-```bash
-kubectl get service password-manager-service
-```
-
-Rollout status:
-
-```bash
-kubectl rollout status deployment/password-manager
-```
-
-A successful deployment is expected to show:
-
-```text
-3/3 replicas ready
-```
-
-with the application Pods in:
-
-```text
-Running
-```
-
-state.
-
----
-
-# ❤️ Readiness and Liveness Probes
-
-The Kubernetes Deployment uses TCP socket probes on port `8000`.
-
-### Readiness probe
-
-The readiness probe checks whether the application container is ready to receive traffic.
-
-### Liveness probe
-
-The liveness probe checks whether the application container is still running correctly.
-
-These probes allow Kubernetes to monitor the application container during deployment.
-
----
-
-# 🖥️ Application Verification
-
-The application can be accessed locally using Kubernetes port forwarding:
-
-```bash
-kubectl port-forward service/password-manager-service 8000:8000
-```
-
-Then open:
-
-```text
-http://localhost:8000
-```
-
-Application verification includes:
-
-1. Opening the web application
-2. Registering a user
-3. Logging in
-4. Adding passwords
-5. Viewing stored passwords
-6. Testing password generation
-7. Testing password updates
-8. Checking the dashboard
-
----
-
-# 🐳 Docker Hub
-
-The Docker image used by the CI/CD pipeline is:
-
-```text
-nidhi8901/web-based-password-manager
-```
-
-The Jenkins pipeline publishes:
-
-```text
-latest
-```
-
-and build-number tags such as:
-
-```text
-9
-10
-11
-```
-
-This allows individual CI/CD builds to be identified and deployed.
-
----
-
-# 📊 Complete Jenkins Pipeline
-
-The completed Jenkins pipeline contains:
-
-```text
-✓ Checkout
-✓ Build
-✓ Test
-✓ Package
-✓ Docker Push
-✓ Deploy
-✓ Verify
-✓ Rollback Test
-✓ Post Actions
-```
-
-The pipeline therefore covers the complete workflow:
-
-```text
-Source Code
-     ↓
-Build
-     ↓
-Automated Test
-     ↓
-Docker Image
-     ↓
-Docker Hub
-     ↓
-Kubernetes Deployment
-     ↓
-Rolling Update
-     ↓
-Verification
-     ↓
-Rollback
-```
-
----
-
-# 👩‍💻 What I Implemented
-
-As part of the DevOps implementation, I worked on:
-
-* Containerizing the Flask application using Docker
-* Creating automated application validation tests
-* Creating the Jenkins CI/CD pipeline
-* Integrating GitHub with Jenkins using a webhook
-* Building Docker images automatically
-* Tagging Docker images using Jenkins build numbers
-* Publishing Docker images to Docker Hub
-* Configuring Kubernetes Deployment and Service
-* Running three application replicas
-* Configuring Kubernetes RollingUpdate
-* Configuring readiness and liveness probes
-* Managing the application encryption key using environment variables and Kubernetes Secrets
-* Adding deployment verification
-* Implementing Kubernetes rollback
-* Testing the complete GitHub-to-Jenkins-to-Docker-to-Kubernetes workflow
-
----
-
-# 📸 Project Evidence
-
-The repository contains:
-
-```text
-project screenshots.pdf
-```
-
-The project evidence includes screenshots related to:
-
-* GitHub repository
-* GitHub webhook
-* Successful Jenkins pipeline
-* Jenkins console output
-* Docker image build and push
-* Kubernetes Deployment
-* Kubernetes Pods
-* Kubernetes Service
-* Rolling deployment
-* Rollback
-* Application verification
-
----
-
-# 📋 Week 9 Implementation
-
-| Requirement            | Implementation                          |
-| ---------------------- | --------------------------------------- |
-| Source Code Management | GitHub                                  |
-| CI/CD                  | Jenkins                                 |
-| GitHub Automation      | GitHub Webhook                          |
-| Automated Testing      | Docker-based validation                 |
-| Containerization       | Docker                                  |
-| Image Registry         | Docker Hub                              |
-| Image Tagging          | Jenkins build number + latest           |
-| Environment Variables  | `ENCRYPTION_KEY`                        |
-| Secrets                | Jenkins Credentials + Kubernetes Secret |
-| Deployment             | Kubernetes                              |
-| Kubernetes Environment | Kind                                    |
-| Replicas               | 3                                       |
-| Deployment Strategy    | RollingUpdate                           |
-| Readiness              | TCP socket probe                        |
-| Liveness               | TCP socket probe                        |
-| Verification           | Jenkins + kubectl                       |
-| Rollback               | Kubernetes `rollout undo`               |
-
----
-
-# 🎯 DevOps Concepts Demonstrated
-
-This project provides practical implementation experience with:
-
-* Linux
-* Git
-* GitHub
-* GitHub Webhooks
-* Jenkins
-* Jenkins Pipeline
-* CI/CD
-* Docker
-* Docker image tagging
-* Docker Hub
-* Automated testing
-* Environment variables
-* Jenkins Credentials
-* Kubernetes
-* Kubernetes Pods
-* Kubernetes Deployments
-* Kubernetes Services
-* Kubernetes Secrets
-* Kubernetes RollingUpdate
-* Readiness probes
-* Liveness probes
-* Deployment verification
-* Kubernetes rollback
-* Kind
 
 ---
 
@@ -1031,12 +781,12 @@ This project provides practical implementation experience with:
                     │     Jenkins     │
                     └────────┬────────┘
                              │
-            ┌────────────────┼────────────────┐
-            │                │                │
-            ▼                ▼                ▼
-         Checkout          Build            Test
-            │                │                │
-            └────────────────┼────────────────┘
+             ┌───────────────┼───────────────┐
+             │               │               │
+             ▼               ▼               ▼
+          Build            Test       Security Scan
+             │               │               │
+             └───────────────┼───────────────┘
                              │
                              ▼
                          Package
@@ -1068,9 +818,9 @@ This project provides practical implementation experience with:
 
 # 🧹 Repository Security
 
-The repository is configured to keep local secrets and generated application data out of version control.
+The repository uses `.gitignore` and `.dockerignore` to prevent sensitive and unnecessary files from being committed or copied into Docker images.
 
-The following types of files are excluded:
+Examples:
 
 ```text
 .env
@@ -1079,7 +829,11 @@ The following types of files are excluded:
 *.sqlite3
 passwords.json
 __pycache__/
-k8s/secret.yaml
+trivy.exe
+trivy.zip
+trivy-before.txt
+trivy-after.txt
+trivy-high-critical.txt
 ```
 
 The repository provides:
@@ -1090,20 +844,109 @@ The repository provides:
 
 as a safe configuration template.
 
-Sensitive credentials such as:
+---
 
-* Encryption keys
-* Docker Hub tokens
-* Jenkins credentials
-* Kubernetes credentials
+# 📋 Week 9 DevSecOps Implementation
 
-should be stored outside the source code.
+| Requirement | Implementation |
+|---|---|
+| CI/CD Review | Jenkins pipeline reviewed and updated |
+| YAML/Configuration Review | Kubernetes deployment and service reviewed |
+| Container Security | Dockerfile hardened |
+| Non-root Execution | `appuser` implemented |
+| Docker Health Check | Implemented |
+| Secret Protection | `.env` excluded |
+| Docker Build Context | `.dockerignore` implemented |
+| Vulnerability Scanning | Trivy |
+| Security Gate | CRITICAL vulnerability gate |
+| Automated Testing | Jenkins Test stage |
+| Container Validation | Non-root user validation |
+| Image Registry | Docker Hub |
+| Deployment | Kubernetes |
+| Deployment Strategy | RollingUpdate |
+| Verification | Jenkins Verify stage |
+| Rollback | Jenkins Rollback Test |
+| GitHub Automation | GitHub Webhook |
+| Production Readiness | Reviewed and documented |
+
+---
+
+# 📊 Before and After Security Summary
+
+| Security Area | Before Week 9 | After Week 9 |
+|---|---|---|
+| Docker user | Root | Non-root `appuser` |
+| Docker health check | Not implemented | Implemented |
+| `.dockerignore` | Limited/absent | Implemented |
+| Local scanner files in image | Possible | Excluded |
+| Trivy CRITICAL findings | 3 | 0 |
+| Trivy HIGH findings | 54 | 44 |
+| Trivy total findings | 180 | 152 |
+| CI security scanning | Not integrated | Integrated |
+| Critical security gate | Not implemented | Implemented |
+| Kubernetes deployment verification | Implemented | Retained |
+| Rollback testing | Implemented | Retained |
+
+---
+
+# ✅ Final Production Readiness Status
+
+The final Week 9 pipeline was successfully executed.
+
+The final workflow completed:
+
+```text
+✓ GitHub Webhook
+✓ Jenkins Checkout
+✓ Build
+✓ Test
+✓ Security Scan
+✓ Docker Image Build
+✓ Docker Hub Push
+✓ Kubernetes Deployment
+✓ Deployment Verification
+✓ Rollback Test
+```
+
+The final pipeline successfully demonstrated an automated application delivery workflow with DevSecOps controls.
+
+---
+
+# 🎯 DevOps Concepts Demonstrated
+
+This project provides practical implementation experience with:
+
+- Linux
+- Git
+- GitHub
+- GitHub Webhooks
+- Jenkins
+- Jenkins Pipeline
+- CI/CD
+- Docker
+- Docker image tagging
+- Docker Hub
+- Trivy
+- Container security
+- Non-root containers
+- Environment variables
+- Jenkins Credentials
+- Kubernetes
+- Kubernetes Pods
+- Kubernetes Deployments
+- Kubernetes Services
+- Kubernetes Secrets
+- Kubernetes RollingUpdate
+- Readiness and liveness concepts
+- Deployment verification
+- Kubernetes rollback
+- Kind
 
 ---
 
 # 📚 Learning Outcomes
 
-This project demonstrates how a Flask application can be integrated into a complete DevOps workflow.
+This project demonstrates how a Flask application can be integrated into a complete DevOps and DevSecOps workflow.
 
 The implemented process is:
 
@@ -1112,9 +955,13 @@ Code
   ↓
 GitHub
   ↓
+GitHub Webhook
+  ↓
 Jenkins
   ↓
 Automated Testing
+  ↓
+Security Scan
   ↓
 Docker Build
   ↓
@@ -1122,26 +969,24 @@ Docker Hub
   ↓
 Kubernetes Deployment
   ↓
-Rolling Update
-  ↓
 Deployment Verification
   ↓
 Rollback
 ```
 
-The project provided practical experience with source control, CI/CD automation, containerization, container registries, Kubernetes deployment, deployment strategies, secrets handling, verification, and rollback.
+The project provided practical experience with source control, CI/CD automation, containerization, security scanning, container hardening, registry publishing, Kubernetes deployment, deployment strategies, secret handling, verification, and rollback.
 
 ---
 
 # ⭐ Project Summary
 
-The Web-Based Password Manager is a Flask application extended with a complete DevOps CI/CD pipeline.
+The Web-Based Password Manager is a Flask application extended with a complete DevOps and DevSecOps pipeline.
 
-The project demonstrates:
+The final workflow demonstrates:
 
-**GitHub → Jenkins → Automated Testing → Docker → Docker Hub → Kubernetes → Rolling Deployment → Verification → Rollback**
+**GitHub → Jenkins → Testing → Trivy Security Scan → Docker → Docker Hub → Kubernetes → Verification → Rollback**
 
-It provides a practical example of automating the application lifecycle from source-code changes through container build and registry publishing to Kubernetes deployment and recovery.
+The project provides a practical example of automating the application lifecycle from source-code changes through security validation, container build, registry publishing, Kubernetes deployment, verification, and recovery.
 
 ---
 
@@ -1159,13 +1004,13 @@ Git
 GitHub
 Jenkins
 Docker
+Docker Hub
 Kubernetes
+Kind
+Trivy
 AWS
 Terraform
 Ansible
 Python
-
-
 CI/CD
 ```
-
